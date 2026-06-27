@@ -26,7 +26,6 @@
 //   payload.userId
 // );
 
-
 // Logout
 // await deleteSession(userId);
 
