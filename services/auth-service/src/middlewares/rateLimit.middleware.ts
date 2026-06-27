@@ -8,6 +8,10 @@ const ratelimit = new Ratelimit({
 });
 
 export const rateLimit = async (req: Request, res: Response, next: NextFunction) => {
+  if (process.env.NODE_ENV === "test") {
+    return next();
+  }
+
   const ip = req.ip || req.headers["x-forwarded-for"]?.toString() || "unknown";
 
   const { success } = await ratelimit.limit(ip);
@@ -15,7 +19,7 @@ export const rateLimit = async (req: Request, res: Response, next: NextFunction)
   if (!success) {
     return res.status(429).json({
       success: false,
-      message: "Too many requests. Please try again later.",
+      message: "Too many requests",
     });
   }
 

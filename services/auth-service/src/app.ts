@@ -12,4 +12,10 @@ app.use(helmet());
 app.use(rateLimit);
 app.use(errorHandler);
 
+app.get("/health", (_, res) => {
+  res.status(200).json({
+    success: true,
+  });
+});
+
 export default app;

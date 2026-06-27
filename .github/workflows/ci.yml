@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Servora CI
+
+on:
+push:
+branches:
+- main
+- development
+
+pull_request:
+branches:
+- main
+- development
+
+jobs:
+auth_service:
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 22
+      cache: npm
+
+  - name: Install Dependencies
+    run: npm install
+
+  - name: Build Auth Service
+    run: npm run build -w auth-service
+
+  - name: Lint Auth Service
+    run: npm run lint -w auth-service
+
+  - name: Test Auth Service
+    run: npm run test -w auth-service
