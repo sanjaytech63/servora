@@ -76,16 +76,15 @@ export class UserRepository {
   }
 
   static createGoogleUser(data: {
-  fullName: string;
-  email: string;
-  googleId: string;
-  avatar?: string;
-}) {
-  return User.create({
-    ...data,
-    role: USER_ROLES.USER,
-    isEmailVerified: true,
-  });
-}
-
+    fullName: string;
+    email: string;
+    googleId: string;
+    avatar?: string;
+  }) {
+    return User.create({
+      ...data,
+      role: USER_ROLES.USER,
+      isEmailVerified: true,
+    });
+  }
 }
