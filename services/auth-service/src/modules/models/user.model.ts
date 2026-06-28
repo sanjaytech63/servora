@@ -33,17 +33,29 @@ const userSchema = new Schema<IUserDocument>(
       required: true,
     },
 
-    // isEmailVerified: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
 
-    // lastLoginAt: Date,
+    lastLoginAt: Date,
 
     // refreshToken: {
     //   type: String,
     //   select: false,
     // },
+
+    googleId: {
+      type: String,
+    },
+
+    githubId: {
+      type: String,
+    },
+
+    avatar: {
+      type: String,
+    },
   },
   {
     timestamps: true,

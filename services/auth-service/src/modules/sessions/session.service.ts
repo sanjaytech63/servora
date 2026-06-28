@@ -1,26 +1,21 @@
-import { redis } from "../../../config/redis";
+import { redis } from "../../config/redis";
 
-const SESSION_PREFIX = "session:";
+export class SessionService {
+  static async createSession(userId: string, role: string) {
+    await redis.set(
+      `session:${userId}`,
+      { userId, role },
+      {
+        ex: 60 * 60 * 24 * 30,
+      },
+    );
+  }
 
-export const createSession = async (userId: string, refreshToken: string) => {
-  const key = `${SESSION_PREFIX}${userId}`;
+  static async getSession(userId: string) {
+    return redis.get(`session:${userId}`);
+  }
 
-  await redis.set(
-    key,
-    {
-      refreshToken,
-      createdAt: Date.now(),
-    },
-    {
-      ex: 60 * 60 * 24 * 7, // 7 days
-    },
-  );
-};
-
-export const getSession = async (userId: string) => {
-  return await redis.get(`${SESSION_PREFIX}${userId}`);
-};
-
-export const deleteSession = async (userId: string) => {
-  await redis.del(`${SESSION_PREFIX}${userId}`);
-};
+  static async deleteSession(userId: string) {
+    await redis.del(`session:${userId}`);
+  }
+}

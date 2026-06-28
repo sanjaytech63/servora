@@ -3,18 +3,19 @@ import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
 
 import { validate } from "../../middlewares/validate.middleware";
-import { rateLimit } from "../../middlewares/rateLimit.middleware";
 
 import {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  //   changePasswordSchema,
-  //   refreshTokenSchema,
-  //   verifyEmailSchema,
   resendVerificationSchema,
+  changePasswordSchema,
+  verifyEmailSchema,
+  refreshTokenSchema,
 } from "../validators/auth.validation";
+import { protect } from "../../middlewares/auth.middleware";
+import passport from "passport";
 
 const router = Router();
 
@@ -22,43 +23,62 @@ const router = Router();
 /*                                   Public                                   */
 /* -------------------------------------------------------------------------- */
 
-router.post("/register", rateLimit, validate(registerSchema), AuthController.register);
+router.post("/register", validate(registerSchema), AuthController.register);
 
-router.post("/login", rateLimit, validate(loginSchema), AuthController.login);
+router.post("/login", validate(loginSchema), AuthController.login);
 
-// router.post("/refresh-token", validate(refreshTokenSchema), AuthController.refreshToken);
+router.post("/refresh-token", validate(refreshTokenSchema), AuthController.refreshToken);
 
 router.post(
   "/forgot-password",
-  rateLimit,
+
   validate(forgotPasswordSchema),
-  //   AuthController.forgotPassword,
+  AuthController.forgotPassword,
 );
 
 router.post(
   "/reset-password",
-  rateLimit,
+
   validate(resetPasswordSchema),
-  //   AuthController.resetPassword,
+  AuthController.resetPassword,
 );
 
-// router.post("/verify-email", validate(verifyEmailSchema), AuthController.verifyEmail);
+router.post("/verify-email", validate(verifyEmailSchema), AuthController.verifyEmail);
 
 router.post(
   "/resend-verification",
-  rateLimit,
   validate(resendVerificationSchema),
-  //   AuthController.resendVerification,
+  AuthController.resendVerification,
 );
 
 /* -------------------------------------------------------------------------- */
 /*                                 Protected                                  */
 /* -------------------------------------------------------------------------- */
 
-// router.patch("/change-password", validate(changePasswordSchema), AuthController.changePassword);
+router.patch(
+  "/change-password",
+  protect,
+  validate(changePasswordSchema),
+  AuthController.changePassword,
+);
 
-// router.post("/logout", AuthController.logout);
+router.get("/me", protect, AuthController.me);
 
-// router.get("/me", AuthController.me);
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  }),
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+  }),
+  AuthController.googleCallback,
+);
+
+router.post("/logout", protect, AuthController.logout);
 
 export default router;
