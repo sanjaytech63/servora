@@ -3,8 +3,8 @@ dotenv.config();
 
 import app from "./app";
 import { connectDB } from "./config/db";
-import { logger } from "@servora/shared";
 import { env } from "./config/env";
+import logger from "@servora/shared/src/utils/logger";
 
 const PORT = env.PORT || 5001;
 

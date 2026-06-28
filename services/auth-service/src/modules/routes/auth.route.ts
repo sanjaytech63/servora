@@ -12,7 +12,7 @@ import {
   resendVerificationSchema,
   changePasswordSchema,
   verifyEmailSchema,
-  refreshTokenSchema,
+  // refreshTokenSchema,
 } from "../validators/auth.validation";
 import { protect } from "../../middlewares/auth.middleware";
 import passport from "passport";
@@ -27,7 +27,7 @@ router.post("/register", validate(registerSchema), AuthController.register);
 
 router.post("/login", validate(loginSchema), AuthController.login);
 
-router.post("/refresh-token", validate(refreshTokenSchema), AuthController.refreshToken);
+router.post("/refresh-token",  AuthController.refreshToken);
 
 router.post(
   "/forgot-password",

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { logger } from "@servora/shared";
 import { env } from "./env";
+import logger from "@servora/shared/src/utils/logger";
 
 export const connectDB = async () => {
   try {

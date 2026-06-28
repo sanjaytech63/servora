@@ -93,9 +93,9 @@ export class AuthService {
       role: string;
     };
 
-    const sessionId = await SessionService.getSession(payload.userId);
+    const session = await SessionService.getSession(payload.userId);
 
-    if (!sessionId || sessionId !== payload.userId) {
+    if (!session) {
       throw new AppError("Session expired", 401);
     }
 
