@@ -1,18 +1,21 @@
-import { createEnv } from "@servora/shared/src/configs/env";
-import { z } from "zod";
-const isTest = process.env.NODE_ENV === "test";
-export const env = createEnv({
-  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+import dotenv from "dotenv";
 
-  PORT: z.coerce.number().default(5001),
+dotenv.config();
 
-  AUTH_MONGO_URI: isTest ? z.string().optional() : z.string().min(1),
+export const env = Object.freeze({
+  /* ---------- App ---------- */
+  NODE_ENV: process.env.NODE_ENV ?? "development",
 
-  JWT_SECRET: isTest ? z.string().optional() : z.string().min(1),
+  PORT: Number(process.env.PORT ?? 5001),
 
-  JWT_REFRESH_SECRET: isTest ? z.string().optional() : z.string().min(1),
+  /* ---------- Database ---------- */
+  AUTH_MONGO_URI: process.env.AUTH_MONGO_URI ?? "",
 
-  UPSTASH_REDIS_REST_URL: z.string().optional(),
+  /* ---------- JWT ---------- */
+  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ?? "",
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET ?? "",
 
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  /* ---------- Redis ---------- */
+  UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ?? "",
+  UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ?? "",
 });
