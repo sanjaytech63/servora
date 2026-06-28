@@ -5,13 +5,13 @@ name: Servora CI
 on:
 push:
 branches:
-- main
-- development
+  - main
+  - development
 
 pull_request:
 branches:
-- main
-- development
+  - main
+  - development
 
 jobs:
 auth_service:

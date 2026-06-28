@@ -1,32 +1,34 @@
-// const accessToken = signAccessToken(user._id.toString());
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-// const refreshToken = signRefreshToken(user._id.toString());
+import { AppError } from "../errors/AppError";
+import { env } from "../config/env";
+import { UserRole } from "@servora/shared";
 
-// await createSession(
-//   user._id.toString(),
-//   refreshToken
-// );
+interface JwtPayload {
+  userId: string;
+  role: string;
+}
 
-// res.cookie("refreshToken", refreshToken, {
-//   httpOnly: true,
-//   secure: process.env.NODE_ENV === "production",
-//   sameSite: "strict",
-//   maxAge: 7 * 24 * 60 * 60 * 1000,
-// });
+export const protect = (req: Request, _res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
 
-// const payload = verifyRefreshToken(token);
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new AppError("Unauthorized", 401));
+  }
 
-// const session = await getSession(payload.userId);
+  try {
+    const token = authHeader.split(" ")[1];
 
-// if (!session) {
-//   throw new Error("Session Expired");
-// }
+    const decoded = jwt.verify(token, env.JWT_ACCESS_SECRET) as JwtPayload;
 
-// const accessToken = signAccessToken(
-//   payload.userId
-// );
+    req.user = {
+      userId: decoded.userId,
+      role: decoded.role as UserRole,
+    };
 
-// Logout
-// await deleteSession(userId);
-
-// res.clearCookie("refreshToken");
+    next();
+  } catch {
+    next(new AppError("Invalid or expired token", 401));
+  }
+};
